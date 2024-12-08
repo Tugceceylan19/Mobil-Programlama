@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+void main(){
+	runApp(MyApp());
+}
+class MyApp extends StatelessWidget{
+	@override
+	Widgetbuild(BuildContext context){
+		return MaterialApp(
+			home:MyHomePage(),
+		);
+	}
+}
+class MyHome expends StatelessWidget{
+	@override
+	Widget build(BuildContext context){
+		return Scaffold(
+			appBar:AppBar(
+				actions:[
+					const ElevatedButton(onPressed:null,child:lcon(Icons.people)),
+					const ElevatedButton(onPressed:null,child:lcon(Icons.bus_alert)),
+				],
+				title:const Text("Burası AppBar`dır"),
+				leading:const Icon(Icons.list),
+				backgroundColor:
+				Color(0*ff108914),
+				foregroundColor:Colors.white,
+			),
+			body:const Center(
+				child:Column(children:[
+					Text("Elma"),
+					Text("Armut"),
+				]),
+			),
+			floatingActionButton:
+			floatingActionButton(
+				onPressed:(){},
+				child:const Icon(Icons.add),
+			),
+		);
+	}
+}
