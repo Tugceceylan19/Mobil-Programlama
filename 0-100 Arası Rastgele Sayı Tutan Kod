@@ -1,0 +1,6 @@
+List<int> sayilar=List<int>.filled(100,0);
+for(int i=0; i<sayilar.length; i++){
+sayilar[i]=Random().nextInt(101);
+}
+var tekrarlanmayanList=Set.from(sayilar);
+print(tekrarlanmayanList.length);
