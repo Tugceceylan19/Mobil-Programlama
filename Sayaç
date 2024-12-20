@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(Sayac());
+}
+
+class Sayac extends StatefulWidget {
+  @override
+  _YardimciMyApp createState() => _YardimciMyApp();
+}
+
+class _YardimciMyApp extends State<Sayac> {
+  int _sayac = 0; //Başlangıç Değeri
+
+  void _arttir() {
+    setState(() {
+      _sayac++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: _sayac >= 10 ? Colors.red : Colors.amber,
+        appBar: AppBar(
+          title: Text("Sayaç App"),
+        ),
+        body: Center(
+            child: Text(
+          _sayac.toString(),
+          style: TextStyle(fontSize: 50),
+        )),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _arttir,
+          child: Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+}
