@@ -1,0 +1,161 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Hesap Makinesi",
+      home: Iskele(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Iskele extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xff7df26e),
+        title: Text("                 Hesap Makinesi"),
+      ),
+      body: AnaEkran(),
+      backgroundColor: Color(0xffe18f57), // Arka plan rengi ekleniyor
+    );
+  }
+}
+
+class AnaEkran extends StatefulWidget {
+  @override
+  _AnaEkranState createState() => _AnaEkranState();
+}
+
+class _AnaEkranState extends State<AnaEkran> {
+  num sayi1 = 0, sayi2 = 0, sonuc = 0;
+
+  TextEditingController t1 = TextEditingController();
+  TextEditingController t2 = TextEditingController();
+
+  void sayiTopla() {
+    setState(() {
+      sayi1 = num.tryParse(t1.text) ?? 0;
+      sayi2 = num.tryParse(t2.text) ?? 0;
+      sonuc = sayi1 + sayi2;
+    });
+  }
+
+  void sayiCikar() {
+    setState(() {
+      sayi1 = num.tryParse(t1.text) ?? 0;
+      sayi2 = num.tryParse(t2.text) ?? 0;
+      sonuc = sayi1 - sayi2;
+    });
+  }
+
+  void sayiCarp() {
+    setState(() {
+      sayi1 = num.tryParse(t1.text) ?? 0;
+      sayi2 = num.tryParse(t2.text) ?? 0;
+      sonuc = sayi1 * sayi2;
+    });
+  }
+
+  void sayiBol() {
+    setState(() {
+      sayi1 = num.tryParse(t1.text) ?? 0;
+      sayi2 = num.tryParse(t2.text) ?? 0;
+      if (sayi2 != 0) {
+        sonuc = sayi1 / sayi2;
+      } else {
+        sonuc = double.infinity; // Handle division by zero
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(50.0),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            // Displaying the result, with fallback text if null
+            Text(
+              "Sonuç: ${sonuc == double.infinity ? 'Hata: Bölüm sıfıra bölünemez!' : sonuc}",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold, // Yazıyı kalın yapıyoruz
+              ),
+            ),
+            SizedBox(height: 20),
+            
+            TextField(
+              controller: t1,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "1. Sayı",
+                labelStyle: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: t2,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                  labelText: "2. Sayı",
+                  labelStyle: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  )                 
+                  ),
+            ),
+            SizedBox(height: 40),
+            // Buttons for operations
+            ElevatedButton(
+              onPressed: sayiTopla,
+              child: Text(
+                "Topla",
+                style: TextStyle(
+                    fontWeight:
+                        FontWeight.bold), // Buton yazısını kalın yapıyoruz
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: sayiCikar,
+              child: Text(
+                "Çıkar",
+                style: TextStyle(
+                    fontWeight:
+                        FontWeight.bold), // Buton yazısını kalın yapıyoruz
+              ),
+            ),
+            ElevatedButton(
+              onPressed: sayiCarp,
+              child: Text(
+                "Çarp",
+                style: TextStyle(
+                    fontWeight:
+                        FontWeight.bold), // Buton yazısını kalın yapıyoruz
+              ),
+            ),
+            ElevatedButton(
+              onPressed: sayiBol,
+              child: Text(
+                "Böl",
+                style: TextStyle(
+                    fontWeight:
+                        FontWeight.bold), // Buton yazısını kalın yapıyoruz
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
