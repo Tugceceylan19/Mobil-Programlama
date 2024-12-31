@@ -1,0 +1,229 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MatchingGame(),
+    );
+  }
+}
+
+class MatchingGame extends StatefulWidget {
+  @override
+  _MatchingGameState createState() => _MatchingGameState();
+}
+
+class _MatchingGameState extends State<MatchingGame> {
+  late List<CardItem> cards;
+  late int player1Score;
+  late int player2Score;
+  late int currentPlayer;
+  late bool isCardFlipped;
+  late CardItem? firstCard;
+  late CardItem? secondCard;
+  String? scoreMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeGame();
+  }
+
+  // Initialize the game
+  void initializeGame() {
+    cards = generateCards();
+    player1Score = 0;
+    player2Score = 0;
+    currentPlayer = 1; // Player 1 starts
+    isCardFlipped = false;
+    firstCard = null;
+    secondCard = null;
+    scoreMessage = null;
+  }
+
+  // Generate shuffled cards
+  List<CardItem> generateCards() {
+    final List<Color> colors = [
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.yellow,
+      Colors.purple,
+      Colors.orange,
+    ];
+    List<CardItem> cardItems = [];
+
+    // Add two cards for each color
+    for (var color in colors) {
+      cardItems.add(CardItem(color: color));
+      cardItems.add(CardItem(color: color));
+    }
+
+    // Shuffle the cards to randomize the order
+    cardItems.shuffle();
+    return cardItems;
+  }
+
+  // Handle card flip and check for matches
+  void flipCard(int index) {
+    if (isCardFlipped || cards[index].isFlipped) return;
+
+    setState(() {
+      cards[index].isFlipped = true;
+
+      if (firstCard == null) {
+        firstCard = cards[index];
+      } else {
+        secondCard = cards[index];
+
+        if (firstCard!.color == secondCard!.color) {
+          // If they match, increment the player's score
+          if (currentPlayer == 1) {
+            player1Score++;
+            scoreMessage = '1. Oyuncu 1 Puan Kazandı!';
+          } else {
+            player2Score++;
+            scoreMessage = '2. Oyuncu 1 Puan Kazandı!';
+          }
+          firstCard = null;
+          secondCard = null;
+          isCardFlipped = false;
+
+          // Clear the score message after 2 seconds
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              scoreMessage = null;
+            });
+          });
+        } else {
+          // If they don't match, switch the player
+          isCardFlipped = true;
+          Future.delayed(Duration(seconds: 1), () {
+            setState(() {
+              firstCard!.isFlipped = false;
+              secondCard!.isFlipped = false;
+              firstCard = null;
+              secondCard = null;
+              currentPlayer = currentPlayer == 1 ? 2 : 1;
+              isCardFlipped = false;
+            });
+          });
+        }
+      }
+    });
+  }
+
+  // Build the game UI
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'EŞLEŞTİRME OYUNU',
+          style: TextStyle(
+              fontSize: 29,
+              fontWeight: FontWeight.bold), // Başlık boyutu arttırıldı
+        ),
+        backgroundColor: Color(0xffe88fc3),
+        centerTitle: true,
+      ),
+      backgroundColor: Color(0xff94d4f9),
+      body: Column(
+        children: [
+          // Display current player's turn
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              'Sıra ${currentPlayer == 1 ? "1. Oyuncuda" : "2. Oyuncuda"}',
+              style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold), // Sıra yazısı büyütüldü
+            ),
+          ),
+          // Scores Display
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  'OYUNCU 1: $player1Score',
+                  style: TextStyle(fontSize: 25), // Puan yazı boyutu arttırıldı
+                ),
+                Text(
+                  'OYUNCU 2: $player2Score',
+                  style: TextStyle(fontSize: 25), // Puan yazı boyutu arttırıldı
+                ),
+              ],
+            ),
+          ),
+          // Display the score message
+          if (scoreMessage != null) ...[
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                scoreMessage!,
+                style: TextStyle(
+                    fontSize: 26,
+                    color: Colors.green,
+                    fontWeight:
+                        FontWeight.bold), // Mesaj yazı boyutu arttırıldı
+              ),
+            ),
+          ],
+          // Display Cards
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: cards.length,
+              padding: EdgeInsets.all(10),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () => flipCard(index),
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      color: cards[index].isFlipped
+                          ? cards[index].color
+                          : Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: cards[index].isFlipped
+                          ? Container()
+                          : Icon(
+                              Icons.help_outline,
+                              color: Colors.white,
+                              size:
+                                  50, // Kart üzerindeki ikonun boyutu arttırıldı
+                            ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Card item class to manage card state
+class CardItem {
+  final Color color;
+  bool isFlipped;
+
+  CardItem({required this.color, this.isFlipped = false});
+}
